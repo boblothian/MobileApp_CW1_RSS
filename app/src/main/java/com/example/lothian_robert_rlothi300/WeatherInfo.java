@@ -3,7 +3,9 @@ package com.example.lothian_robert_rlothi300;
 import android.util.Log;
 
 public class WeatherInfo {
-    private String weatherTitle;
+    private String day;
+    private String date;
+    private String time;
     private String maxTemperature;
     private String minTemperature;
     private String windDirection;

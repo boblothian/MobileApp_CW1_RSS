@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     private Spinner spinner;
     private static String[] paths = {"Glasgow", "London", "New York", "Oman", "Mauritius", "Bangladesh"}; // this displays names in spinner
-    public WeatherInfo weatherInfo;
+    public WeatherInfo weatherDay1, weatherDay2, weatherDay3;
     public String locationID = "2648579";
 
     @Override
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         spinner.setOnItemSelectedListener(this);
     }
 
+    //When an option on the spinner is picked it changes the locationID and acts as an onClick
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 
         switch (position) {
@@ -148,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     // and then the tag <description> where it sends that data to another parser in the parseDescription method
     // Update the weatherDataDisplay TextView with the formatted weather data
     private void parseData(String dataToParse) {
-        List<WeatherInfo> weatherInfoList = new ArrayList<>();
+        List<WeatherInfo> weatherInfoList1 = new ArrayList<>();
+        List<WeatherInfo> weatherInfoList2 = new ArrayList<>();
+        List<WeatherInfo> weatherInfoList3 = new ArrayList<>();
 
 
         try {
@@ -165,35 +168,87 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     case XmlPullParser.START_TAG:
                         tagName = parser.getName();
                         if (tagName.equalsIgnoreCase("item")) {
-                            weatherInfo = new WeatherInfo();
+                            weatherDay1 = new WeatherInfo();
                         }
                         break;
 
                     case XmlPullParser.TEXT:
                         String text = parser.getText();
-                        if (tagName != null && weatherInfo != null) {
+                        if (tagName != null && weatherDay1 != null) {
                             switch (tagName) {
                                 case "description":
-                                    parseDescription(text, weatherInfo);
+                                    parseDescription(text, weatherDay1);
                                     break;
                             }
                         }
                         break;
                 }
                 eventType = parser.next();
+
+                //Day2
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        tagName = parser.getName();
+                        if (tagName.equalsIgnoreCase("item")) {
+                            weatherDay2 = new WeatherInfo();
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        String text = parser.getText();
+                        if (tagName != null && weatherDay2 != null) {
+                            switch (tagName) {
+                                case "description":
+                                    parseDescription(text, weatherDay2);
+                                    break;
+                            }
+                        }
+                        break;
+                }
+
+                //Day3
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        tagName = parser.getName();
+                        if (tagName.equalsIgnoreCase("item")) {
+                            weatherDay3 = new WeatherInfo();
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT:
+                        String text = parser.getText();
+                        if (tagName != null && weatherDay3 != null) {
+                            switch (tagName) {
+                                case "description":
+                                    parseDescription(text, weatherDay3);
+                                    break;
+                            }
+                        }
+                        break;
+                }
+
+            }
+            //TODO Need to make seperate lists currently it prints day 1 data 3 times :/
+            //if the data is not null add it to a list
+            if (weatherDay1 != null) {
+                weatherInfoList1.add(weatherDay1);
             }
 
-            //if the data is not null add it to a list
-            if (weatherInfo != null) {
-                weatherInfoList.add(weatherInfo);
+            if (weatherDay2 != null) {
+                weatherInfoList2.add(weatherDay2);
             }
+
+            if (weatherDay3 != null) {
+                weatherInfoList3.add(weatherDay3);
+            }
+
 
             // Updates the interface with parsed data
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     // This displays the information just parsed and formatted in the list
-                    displayWeatherInfo(weatherInfoList);
+                    displayWeatherInfo(weatherInfoList1, weatherInfoList2, weatherInfoList3);
                 }
             });
 
@@ -259,13 +314,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
     //method to display the information gathered in the RSS feed. This will change as for the project I will use fragments to contain this information
-    private void displayWeatherInfo(List<WeatherInfo> weatherInfoList) {
+    private void displayWeatherInfo(List<WeatherInfo> weatherInfoList1, List<WeatherInfo> weatherInfoList2, List<WeatherInfo> weatherInfoList3) {
         StringBuilder weatherData = new StringBuilder();
 
         // This appends weather info with data contained in the weatherInfo object and prints the category
         //TODO look at ways to display this information in more appealing ways, use images (eg wind direction N S E W, could scale this image depending on speed? If <10mph size small <30 >10 medium, >30 large
 
-        for (WeatherInfo weatherInfo : weatherInfoList) {
+        for (WeatherInfo weatherInfo : weatherInfoList1) {
             // Example: Append max and min temperature
             Log.d("WeatherInfo", "Max Temperature: " + weatherInfo.getMaxTemperature());
             weatherData.append("Max Temperature: ").append(weatherInfo.getMaxTemperature()).append("\n");
@@ -278,9 +333,45 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             weatherData.append("UV Risk: ").append(weatherInfo.getUvRisk()).append("\n");
             weatherData.append("Pollution: ").append(weatherInfo.getPollution()).append("\n");
             weatherData.append("Sunrise: ").append(weatherInfo.getSunrise()).append("\n");
-            weatherData.append("Sunset: ").append(weatherInfo.getSunset()).append("\n");
+            weatherData.append("Sunset: ").append(weatherInfo.getSunset()).append("\n\n");
             // Append other weather information as needed
         }
+
+        for (WeatherInfo weatherInfo : weatherInfoList2) {
+            // Example: Append max and min temperature
+            Log.d("WeatherInfo", "Max Temperature: " + weatherInfo.getMaxTemperature());
+            weatherData.append("Max Temperature: ").append(weatherInfo.getMaxTemperature()).append("\n");
+            weatherData.append("Min Temperature: ").append(weatherInfo.getMinTemperature()).append("\n");
+            weatherData.append("Wind Direction: ").append(weatherInfo.getWindDirection()).append("\n");
+            weatherData.append("Wind Speed: ").append(weatherInfo.getWindSpeed()).append("\n");
+            weatherData.append("Visibility: ").append(weatherInfo.getVisibility()).append("\n");
+            weatherData.append("Pressure: ").append(weatherInfo.getPressure()).append("\n");
+            weatherData.append("Humidity: ").append(weatherInfo.getHumidity()).append("\n");
+            weatherData.append("UV Risk: ").append(weatherInfo.getUvRisk()).append("\n");
+            weatherData.append("Pollution: ").append(weatherInfo.getPollution()).append("\n");
+            weatherData.append("Sunrise: ").append(weatherInfo.getSunrise()).append("\n");
+            weatherData.append("Sunset: ").append(weatherInfo.getSunset()).append("\n\n");
+            // Append other weather information as needed
+        }
+
+        for (WeatherInfo weatherInfo : weatherInfoList3) {
+            // Example: Append max and min temperature
+            Log.d("WeatherInfo", "Max Temperature: " + weatherInfo.getMaxTemperature());
+            weatherData.append("Max Temperature: ").append(weatherInfo.getMaxTemperature()).append("\n");
+            weatherData.append("Min Temperature: ").append(weatherInfo.getMinTemperature()).append("\n");
+            weatherData.append("Wind Direction: ").append(weatherInfo.getWindDirection()).append("\n");
+            weatherData.append("Wind Speed: ").append(weatherInfo.getWindSpeed()).append("\n");
+            weatherData.append("Visibility: ").append(weatherInfo.getVisibility()).append("\n");
+            weatherData.append("Pressure: ").append(weatherInfo.getPressure()).append("\n");
+            weatherData.append("Humidity: ").append(weatherInfo.getHumidity()).append("\n");
+            weatherData.append("UV Risk: ").append(weatherInfo.getUvRisk()).append("\n");
+            weatherData.append("Pollution: ").append(weatherInfo.getPollution()).append("\n");
+            weatherData.append("Sunrise: ").append(weatherInfo.getSunrise()).append("\n");
+            weatherData.append("Sunset: ").append(weatherInfo.getSunset()).append("\n\n");
+            // Append other weather information as needed
+        }
+
+
 
         //this displays the above information in a text box.
         runOnUiThread(new Runnable() {
