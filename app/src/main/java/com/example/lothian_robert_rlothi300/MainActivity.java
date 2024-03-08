@@ -89,7 +89,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             parseData(result);
         }
     }
-
+    //this is where the parser starts and finds the tag <item> where it creates a new WeatherInfo object
+    // and then the tag <description> where it sends that data to another parser in the parseDescription method
+    // Update the weatherDataDisplay TextView with the formatted weather data <
     private void parseData(String dataToParse) {
         List<WeatherInfo> weatherInfoList = new ArrayList<>();
 
@@ -145,7 +147,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
     }
 
-    //this method parses through the Description tag of the RSS feed, it splits the data into key values by identifying when a ": " occurs
+    //this method parses through the Description tag of the RSS feed, it splits the data by category
+    // by looking for comma's and then into key values by identifying when a ": " occurs
     private void parseDescription(String description, WeatherInfo weatherInfo){
         Log.e("Description", description);
         String[] parts = description.split(", ");
@@ -157,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 String key = keyValue[0];
                 String value = keyValue[1];
 
-                //this switch statement assigns the value just separated to the setMaxTemperature variable in the WeatherInfo class
+                //this switch statement assigns the value just separated to the setMaxTemperature variable in the WeatherInfo object
                 switch (key) {
                     case "Maximum Temperature":
                         weatherInfo.setMaxTemperature(value);
@@ -199,11 +202,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             }
         }
     }
-
+    //method to display the information gathered in the RSS feed. This will change as for the project I will use fragments to contain this information
     private void displayWeatherInfo(List<WeatherInfo> weatherInfoList) {
         StringBuilder weatherData = new StringBuilder();
 
-        // Append weather information for each WeatherInfo object in the list
+        // This appends weather info with data contained in the weatherInfo object and prints the category
+        //TODO look at ways to display this information in more appealing ways, use images (eg wind direction N S E W, could scale this image depending on speed? If <10mph size small <30 >10 medium, >30 large
+
         for (WeatherInfo weatherInfo : weatherInfoList) {
             // Example: Append max and min temperature
             Log.d("WeatherInfo", "Max Temperature: " + weatherInfo.getMaxTemperature());
@@ -221,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             // Append other weather information as needed
         }
 
-        // Update the weatherDataDisplay TextView with the formatted weather data
+        //this displays the above information in a text box.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
