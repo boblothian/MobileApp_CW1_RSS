@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
     }
 
-    //this method parses throught the Description tag of the RSS feed, it splits the data into key values by identifying when a ": " occurs
+    //this method parses through the Description tag of the RSS feed, it splits the data into key values by identifying when a ": " occurs
     private void parseDescription(String description, WeatherInfo weatherInfo){
         Log.e("Description", description);
         String[] parts = description.split(", ");
