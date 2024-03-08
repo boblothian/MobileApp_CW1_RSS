@@ -34,8 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Set up the raw links to the graphical components
-        rawDataDisplay = findViewById(R.id.rawDataDisplay);
+
         weatherDataDisplay = findViewById(R.id.weatherData);
         startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(this);
@@ -132,11 +131,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 weatherInfoList.add(weatherInfo);
             }
 
-            // Update UI with parsed weather information
+            // Updates the interface with parsed data
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    // Update UI components here
+                    // This displays the information just parsed and formatted
                     displayWeatherInfo(weatherInfoList);
                 }
             });
@@ -146,16 +145,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
     }
 
+    //this method parses throught the Description tag of the RSS feed, it splits the data into key values by identifying when a ": " occurs
     private void parseDescription(String description, WeatherInfo weatherInfo){
         Log.e("Description", description);
         String[] parts = description.split(", ");
 
+        //This identifies the Key Values and splits them
         for (String part : parts) {
             String[] keyValue = part.split(": ");
             if (keyValue.length ==2) {
                 String key = keyValue[0];
                 String value = keyValue[1];
 
+                //this switch statement assigns the value just separated to the setMaxTemperature variable in the WeatherInfo class
                 switch (key) {
                     case "Maximum Temperature":
                         weatherInfo.setMaxTemperature(value);
