@@ -3,6 +3,7 @@ package com.example.lothian_robert_rlothi300;
 import android.util.Log;
 
 public class WeatherInfo {
+    private String weatherTitle;
     private String maxTemperature;
     private String minTemperature;
     private String windDirection;
@@ -108,21 +109,4 @@ public class WeatherInfo {
         this.sunset = sunset;
     }
 
-    // toString method to print the object
-    @Override
-    public String toString() {
-        return "WeatherInfo{" +
-                "maxTemperature='" + maxTemperature + '\'' +
-                ", minTemperature='" + minTemperature + '\'' +
-                ", windDirection='" + windDirection + '\'' +
-                ", windSpeed='" + windSpeed + '\'' +
-                ", visibility='" + visibility + '\'' +
-                ", pressure='" + pressure + '\'' +
-                ", humidity='" + humidity + '\'' +
-                ", uvRisk='" + uvRisk + '\'' +
-                ", pollution='" + pollution + '\'' +
-                ", sunrise='" + sunrise + '\'' +
-                ", sunset='" + sunset + '\'' +
-                '}';
-    }
 }

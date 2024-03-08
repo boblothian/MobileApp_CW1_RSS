@@ -6,7 +6,10 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
@@ -22,13 +25,14 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener {
-    private TextView rawDataDisplay;
+public class MainActivity extends AppCompatActivity implements OnClickListener, AdapterView.OnItemSelectedListener {
     private TextView weatherDataDisplay;
     private Button startButton;
-    private String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/2643123";
 
+    private Spinner spinner;
+    private static String[] paths = {"Glasgow", "London", "New York", "Oman", "Mauritius", "Bangladesh"}; // this displays names in spinner
     public WeatherInfo weatherInfo;
+    public String locationID = "2648579";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,52 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(this);
 
-        // More Code goes here
+        spinner = findViewById(R.id.spinner);
+        ArrayAdapter<String>adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item,paths);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+
+        switch (position) {
+            case 0:
+                //Glasgow
+                locationID = "2648579";
+                startButton.callOnClick();
+                break;
+            case 1:
+                //London
+                locationID = "2643743";
+                startButton.callOnClick();
+                break;
+            case 2:
+                //New York
+                locationID = "5128581";
+                startButton.callOnClick();
+                break;
+            case 3:
+                //Oman
+                locationID = "287286";
+                startButton.callOnClick();
+                break;
+            case 4:
+                //Mauritius
+                locationID = "934154";
+                startButton.callOnClick();
+                break;
+            case 5:
+                //Bangladesh
+                locationID = "1185241";
+                startButton.callOnClick();
+                break;
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        //nothing happens
     }
 
     public void onClick(View aview) {
@@ -47,8 +96,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
     public void startProgress() {
+        String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/"+ locationID+"/"; //calls the RSS feed with location modifier chosen by spinner
         // Run network access on a separate thread;
         new Thread(new Task(urlSource)).start();
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 
     // Need separate thread to access the internet resource over network
@@ -91,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
     //this is where the parser starts and finds the tag <item> where it creates a new WeatherInfo object
     // and then the tag <description> where it sends that data to another parser in the parseDescription method
-    // Update the weatherDataDisplay TextView with the formatted weather data <
+    // Update the weatherDataDisplay TextView with the formatted weather data
     private void parseData(String dataToParse) {
         List<WeatherInfo> weatherInfoList = new ArrayList<>();
 
@@ -128,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 eventType = parser.next();
             }
 
-
+            //if the data is not null add it to a list
             if (weatherInfo != null) {
                 weatherInfoList.add(weatherInfo);
             }
@@ -137,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    // This displays the information just parsed and formatted
+                    // This displays the information just parsed and formatted in the list
                     displayWeatherInfo(weatherInfoList);
                 }
             });
@@ -148,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
     //this method parses through the Description tag of the RSS feed, it splits the data by category
-    // by looking for comma's and then into key values by identifying when a ": " occurs
+    //by looking for a comma space ", " and then into key values by identifying when a colon space ": " occurs
     private void parseDescription(String description, WeatherInfo weatherInfo){
         Log.e("Description", description);
         String[] parts = description.split(", ");
@@ -156,6 +211,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         //This identifies the Key Values and splits them
         for (String part : parts) {
             String[] keyValue = part.split(": ");
+            // this checks to ensure only the keypair only has 2 parts (to match how the RSS feed is formatted)
             if (keyValue.length ==2) {
                 String key = keyValue[0];
                 String value = keyValue[1];
@@ -234,4 +290,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             }
         });
     }
+
+
 }
