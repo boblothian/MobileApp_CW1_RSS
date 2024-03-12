@@ -2,7 +2,9 @@ package com.example.lothian_robert_rlothi300;
 
 import android.util.Log;
 
-public class WeatherInfo {
+import java.io.Serializable;
+
+public class WeatherInfo implements Serializable {
     private String day;
     private String date;
     private String time;
@@ -21,6 +23,18 @@ public class WeatherInfo {
     // Constructor
     public WeatherInfo() {
     }
+
+    public String getDay() {return day; }
+
+    public void setDay(String day) { this.day = day; }
+
+    public String getDate() {return date; }
+
+    public void setDate(String date) {this.date = date; }
+
+    public String getTime() {return time; }
+
+    public void setTime(String time) {this.time = time; }
 
     // Getters and Setters
     public String getMaxTemperature() {

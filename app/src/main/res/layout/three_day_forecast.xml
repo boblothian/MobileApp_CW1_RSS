@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragmentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- TextViews to display weather information -->
+    <TextView
+        android:id="@+id/day1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/maxTemp1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Maximum Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/minTemp1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Minimum Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/windDirection1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wind Direction: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/windSpeed1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wind Speed: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/visibility1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Visibility: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/pressure1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pressure: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/humidity1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Humidity: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/uvRisk1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UV Risk: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/pollution1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pollution: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sunrise1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sunrise: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sunset1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sunset: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/day2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/maxTemp2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Maximum Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/minTemp2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Minimum Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/windDirection2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wind Direction: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/windSpeed2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wind Speed: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/visibility2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Visibility: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/pressure2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pressure: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/humidity2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Humidity: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/uvRisk2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="UV Risk: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/pollution2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pollution: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sunrise2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sunrise: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sunset2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sunset: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/day3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/maxTemp3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Maximum Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/minTemp3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minimum Temperature: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/windDirection3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wind Direction: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/windSpeed3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wind Speed: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/visibility3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Visibility: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/pressure3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pressure: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/humidity3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Humidity: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/uvRisk3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="UV Risk: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/pollution3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pollution: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sunrise3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sunrise: "
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/sunset3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sunset: "
+        android:textSize="18sp" />
+</LinearLayout>
