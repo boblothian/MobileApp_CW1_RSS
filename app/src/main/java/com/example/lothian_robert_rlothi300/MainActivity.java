@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     // and then the tag <description> where it sends that data to another parser in the parseDescription method
     // Update the weatherDataDisplay TextView with the formatted weather data
     private void parseData(String dataToParse) {
-        //this clears the default data so new location data can be added to the list
+        // Clear the default data so new location data can be added to the list
         weatherInfoList1.clear();
         weatherInfoList2.clear();
         weatherInfoList3.clear();
@@ -192,6 +192,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     case XmlPullParser.TEXT:
                         String text = parser.getText();
                         if (tagName != null && currentWeatherInfo != null) {
+                            switch (tagName){
+                                case "title":
+                                    parseTitle(text, currentWeatherInfo);
+                                    break;
+                            }
                             switch (tagName) {
                                 case "description":
                                     parseDescription(text, currentWeatherInfo);
@@ -203,13 +208,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     case XmlPullParser.END_TAG:
                         if (parser.getName().equalsIgnoreCase("item")) {
                             if (currentWeatherInfo != null) {
-                                if (weatherInfoList1.size() == 0) {
+                                if (weatherInfoList1.isEmpty()) {
                                     weatherInfoList1.add(currentWeatherInfo);
-                                } else if (weatherInfoList2.size() == 0) {
+                                } else if (weatherInfoList2.isEmpty()) {
                                     weatherInfoList2.add(currentWeatherInfo);
                                 } else {
                                     weatherInfoList3.add(currentWeatherInfo);
                                 }
+                                currentWeatherInfo = null; // Reset currentWeatherInfo after adding to a list
                             }
                         }
                         break;
@@ -219,6 +225,29 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void parseTitle(String title, WeatherInfo weatherInfo){
+
+        title = title.trim();
+
+        if (!title.isEmpty()) {
+            // Split the title by colon (":")
+            String[] parts = title.split(":");
+
+            if (parts.length > 0) {
+                // Extract the first part, which should contain the day
+                String dayPart = parts[0];
+
+                // Extract the day by removing leading and trailing whitespaces
+                String day = dayPart.trim();
+
+                // Set the day in the WeatherInfo object
+                weatherInfo.setDay(day);
+            }
+        } else {
+            Log.d("ParseTitle", "Empty title string provided.");
         }
     }
 
