@@ -25,6 +25,8 @@ public class ThreeDayForecastActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.three_day_forecast);
 
+
+
         // Initialize arrays of TextViews for each weather parameter
         initializeTextViewArrays();
 

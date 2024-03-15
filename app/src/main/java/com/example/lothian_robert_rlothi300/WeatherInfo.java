@@ -8,6 +8,7 @@ public class WeatherInfo implements Serializable {
     private String day;
     private String date;
     private String time;
+    private String currentTemperature;
     private String maxTemperature;
     private String minTemperature;
     private String windDirection;
@@ -28,15 +29,15 @@ public class WeatherInfo implements Serializable {
 
     public void setDay(String day) { this.day = day; }
 
-    public String getDate() {return date; }
+    public String getDate() { return date; }
 
-    public void setDate(String date) {this.date = date; }
+    public void setDate(String date) { this.date = date; }
 
-    public String getTime() {return time; }
+    public String getTime() { return time; }
 
-    public void setTime(String time) {this.time = time; }
-
-    // Getters and Setters
+    public void setTime(String time) { this.time = time; }
+    public String getCurrentTemperature(){ return currentTemperature;}
+    public void setCurrentTemperature(String currentTemperature) { this.currentTemperature = currentTemperature; }
     public String getMaxTemperature() {
         return maxTemperature;
     }

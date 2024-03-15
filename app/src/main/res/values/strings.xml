@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Lothian_Robert_RLOTHI300</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
