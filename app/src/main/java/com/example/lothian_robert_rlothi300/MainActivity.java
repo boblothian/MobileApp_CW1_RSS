@@ -25,9 +25,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-//TODO Implement double tap to cycle locations, animate google map to new location as a transition (This can be used to query the RSS feed). Use viewFlipper -> Place -> Map transition -> Place etc. etc.
-//TODO accessibility options, dark mode font size, update feed
-public class MainActivity extends AppCompatActivity implements OnClickListener, AdapterView.OnItemSelectedListener {
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class MainActivity extends AppCompatActivity implements OnClickListener, AdapterView.OnItemSelectedListener, OnMapReadyCallback{
+    private TextView location;
     private TextView temperature;
     private TextView windDirection;
     private TextView windSpeed;
@@ -35,7 +42,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private TextView pressure;
     private TextView visibility;
     private Button startButton;
-
+    private GoogleMap map;
+    private MapView mapView;
     private Button threeDayForecast;
 
     private Spinner spinner;
@@ -45,12 +53,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private static String[] paths = {"Glasgow", "London", "New York", "Oman", "Mauritius", "Bangladesh"}; // this displays names in spinner
     public String locationID = "2648579"; //sets Glasgow as default
 
+    private double latitude;
+    private double longitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // Initialize TextView elements
+        location = findViewById(R.id.location);
         temperature = findViewById(R.id.temperature);
         windDirection = findViewById(R.id.windDirection);
         windSpeed = findViewById(R.id.windSpeed);
@@ -67,68 +79,109 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         // Initialize Buttons
         startButton = findViewById(R.id.startButton);
-        //startButton.setVisibility(View.GONE); // Hide the button initially
+        startButton.setVisibility(View.GONE); // Hide the button initially
         startButton.setOnClickListener(this);
 
         threeDayForecast = findViewById(R.id.threeDayButton);
         threeDayForecast.setOnClickListener(this);
 
+        latitude = 55.8617;
+        longitude = -4.2583;
+
+
+        //map
+        mapView = findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
         // Start progress to fetch and populate weather data
         startProgress();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+
+
     //When an option on the spinner is picked it changes the locationID and acts as an onClick
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-
+        String selectedLocation = paths[position]; // Get the selected location from the spinner
+        location.setText(selectedLocation);
+        String location = "";
         double latitude = 0;
         double longitude = 0;
         switch (position) {
             case 0:
                 //Glasgow
+                location = "Glasgow";
                 locationID = "2648579";
                 latitude = 55.8617;
                 longitude = -4.2583;
                 break;
             case 1:
                 //London
+                location = "London";
                 locationID = "2643743";
                 latitude = 51.5072;
                 longitude = 0.1276;
                 break;
             case 2:
                 //New York
+                location = "New York";
                 locationID = "5128581";
                 latitude = 40.7128;
                 longitude = -74.0060;
                 break;
             case 3:
                 //Oman
+                location = "Oman";
                 locationID = "287286";
-                latitude = 21.4735;
-                longitude = 55.9754;
+                latitude = 23.6032;
+                longitude = 58.4471;
                 break;
             case 4:
                 //Mauritius
+                location = "Mauritius";
                 locationID = "934154";
-                latitude = -20.3484;
-                longitude = 57.5522;
+                latitude = -20.1587;
+                longitude = 57.5033;
                 break;
             case 5:
                 //Bangladesh
+                location = "Bangladesh";
                 locationID = "1185241";
                 latitude = 23.6850;
                 longitude = 90.3563;
                 break;
         }
 
-        /*if (latitude != 0 && longitude != 0) {
-            Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-            intent.putExtra("Latitude", String.valueOf(latitude)); // Convert latitude to String
-            intent.putExtra("Longitude", String.valueOf(longitude)); // Convert longitude to String
-            startActivity(intent);
-        } else {
-            Log.e("onClick", "Invalid latitude or longitude values");
-        }*/
+        if (map != null) {
+            LatLng myLocation = new LatLng(latitude, longitude);
+            map.clear(); // Clear existing markers
+            map.addMarker(new MarkerOptions().position(myLocation).title("You are here"));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 12f)); // Zoom level can be adjusted as needed
+        }
 
         // Clear the lists before fetching new data
         weatherInfoList1.clear();
@@ -137,14 +190,25 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         startProgress();
     }
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+
+        // Now you can use the map object to add markers and perform other map-related operations
+        // For example:
+        if (map != null) {
+            LatLng location = new LatLng(latitude, longitude);
+            map.addMarker(new MarkerOptions().position(location).title("You are here"));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f)); // Zoom level can be adjusted as needed
+        }
+    }
+
 
     public void onNothingSelected(AdapterView<?> parent) {
         //nothing happens
     }
 
     public void onClick(View aview) {
-        double latitude = 0;
-        double longitude = 0;
 
         if (aview.getId() == R.id.startButton) {
             // Fetch current weather data when the start button is clicked
@@ -376,8 +440,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-
 
                     temperature.setText(weatherInfo.getCurrentTemperature());
                     windDirection.setText("Wind Direction: " + weatherInfo.getWindDirection());

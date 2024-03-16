@@ -28,6 +28,14 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/location"
+                android:layout_width="380dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="38sp"
+                android:textStyle="bold"/>
+
+            <TextView
                 android:id="@+id/temperature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,29 +89,6 @@
                 android:textAlignment="center"
                 android:text="Visibility: "
                 android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/startButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Refresh Data"
-                android:textColor="@android:color/white" />
-
-            <TextView
-                android:id="@+id/acknowledgement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Data provided by BBC Weather"
-                android:textSize="14sp" />
-
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:minHeight="48dp" />
-
             <Button
                 android:id="@+id/threeDayButton"
                 android:layout_width="match_parent"
@@ -113,13 +98,25 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/showMapButton"
-                android:layout_width="wrap_content"
+                android:id="@+id/startButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Refresh Data"
+                android:textColor="@android:color/white" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@null"
-                android:onClick="onShowMapButtonClick"
-                android:text="Show Map" />
+                android:minHeight="48dp" />
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
     </FrameLayout>
 
