@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/dayFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/maxTempFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Maximum Temperature: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/minTempFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Minimum Temperature: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/windDirectionFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wind Direction: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/windSpeedFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wind Speed: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/visibilityFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Visibility: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/pressureFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pressure: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/humidityFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Humidity: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/uvRiskFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UV Risk: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/pollutionFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pollution: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/sunriseFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sunrise: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/sunsetFrag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sunset: "
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

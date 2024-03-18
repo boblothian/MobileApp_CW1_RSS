@@ -414,27 +414,27 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
-    private void parseTitle(String title, WeatherInfo weatherInfo){
-
-        if (!title.isEmpty()) {
-            title = title.trim();
-            // Split the title by colon (":")
+    private void parseTitle(String title, WeatherInfo weatherInfo) {
+        if (title != null && !title.isEmpty()) {
+            // Split the title by colon (":") to separate different parts
             String[] parts = title.split(":");
 
+            // Ensure there is at least one part
             if (parts.length > 0) {
-                // Extract the first part, which should contain the day
-                String dayPart = parts[0];
-
-                // Extract the day by removing leading and trailing whitespaces
-                String day = dayPart.trim();
+                // Extract the first part, trim leading/trailing whitespaces, and set as the day
+                String day = parts[0].trim();
 
                 // Set the day in the WeatherInfo object
                 weatherInfo.setDay(day);
+                Log.d("ParseTitle", "Day extracted: " + day);
+            } else {
+                Log.d("ParseTitle", "Invalid title format: " + title);
             }
         } else {
-            Log.d("ParseTitle", "Empty title string provided.");
+            Log.d("ParseTitle", "Empty or null title string provided.");
         }
     }
+
     private void updateWeatherViews(WeatherInfo weatherInfo) {
         if (weatherInfo != null) {
             runOnUiThread(new Runnable() {
