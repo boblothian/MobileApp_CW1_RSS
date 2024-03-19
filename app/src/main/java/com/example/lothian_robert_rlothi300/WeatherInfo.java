@@ -20,6 +20,7 @@ public class WeatherInfo implements Serializable {
     private String pollution;
     private String sunrise;
     private String sunset;
+    private String condition;
 
     // Constructor
     public WeatherInfo() {
@@ -126,4 +127,6 @@ public class WeatherInfo implements Serializable {
         this.sunset = sunset;
     }
 
-}
+    public String getWeatherCondition() { return condition; }
+    public void setWeatherCondition(String condition){ this.condition = condition;}
+    }

@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private TextView humidity;
     private TextView pressure;
     private TextView visibility;
+    private ImageView weatherImg;
     private Button startButton;
     private GoogleMap map;
     private MapView mapView;
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         setContentView(R.layout.activity_main);
 
         // Initialize TextView elements
+        weatherImg =findViewById(R.id.weatherImg);
         location = findViewById(R.id.location);
         temperature = findViewById(R.id.temperature);
         windDirection = findViewById(R.id.windDirection);
@@ -420,13 +423,28 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             String[] parts = title.split(":");
 
             // Ensure there is at least one part
-            if (parts.length > 0) {
+            if (parts.length > 1) {
                 // Extract the first part, trim leading/trailing whitespaces, and set as the day
                 String day = parts[0].trim();
 
                 // Set the day in the WeatherInfo object
                 weatherInfo.setDay(day);
                 Log.d("ParseTitle", "Day extracted: " + day);
+
+                // Extract the weather condition from the title
+                String weatherAndTemp = parts[1].trim(); // Extract the weather condition after the colon
+                // Split the weatherAndTemp by comma (",") to separate weather condition and minimum temperature
+                String[] weatherParts = weatherAndTemp.split(",");
+                if (weatherParts.length > 0) {
+                    String weatherCondition = weatherParts[0].trim(); // Extract the weather condition
+                    weatherInfo.setWeatherCondition(weatherCondition);
+                    Log.d("ParseTitle", "Weather Condition extracted: " + weatherCondition);
+
+                    // Set the image for the weather condition
+                    setImageForWeatherCondition(weatherCondition, weatherInfo);
+                } else {
+                    Log.d("ParseTitle", "Invalid weather format: " + weatherAndTemp);
+                }
             } else {
                 Log.d("ParseTitle", "Invalid title format: " + title);
             }
@@ -434,6 +452,51 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             Log.d("ParseTitle", "Empty or null title string provided.");
         }
     }
+
+
+    private void setImageForWeatherCondition(String condition, WeatherInfo weatherInfo) {
+        // Fetching condition from WeatherInfo object
+        condition = weatherInfo.getWeatherCondition();
+
+        String finalCondition = condition;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (finalCondition) {
+                    case "Sunny":
+                        weatherImg.setImageResource(R.drawable.sunny);
+                        Log.d("setImageForWeatherCondition", "Setting image for Sunny condition");
+                        break;
+                    case "Sunny Intervals":
+                        weatherImg.setImageResource(R.drawable.sunny_intervals);
+                        Log.d("setImageForWeatherCondition", "Setting image for Sunny Intervals condition");
+                        break;
+                    case "Light Rain":
+                        weatherImg.setImageResource(R.drawable.light_rain);
+                        Log.d("setImageForWeatherCondition", "Setting image for Light Rain condition");
+                        break;
+                    case "Rain":
+                        weatherImg.setImageResource(R.drawable.rain);
+                        Log.d("setImageForWeatherCondition", "Setting image for Rain condition");
+                        break;
+                    case "Heavy Rain":
+                        weatherImg.setImageResource(R.drawable.heavy_rain);
+                        Log.d("setImageForWeatherCondition", "Setting image for Heavy Rain condition");
+                        break;
+                    case "Snow":
+                        weatherImg.setImageResource(R.drawable.snow);
+                        Log.d("setImageForWeatherCondition", "Setting image for Snow condition");
+                        break;
+                    default:
+                        // Set a default image if the condition is not recognized
+                        weatherImg.setImageResource(R.drawable.default_image);
+                        Log.d("setImageForWeatherCondition", "Setting default image as condition not recognized");
+                        break;
+                }
+            }
+        });
+    }
+
 
     private void updateWeatherViews(WeatherInfo weatherInfo) {
         if (weatherInfo != null) {
