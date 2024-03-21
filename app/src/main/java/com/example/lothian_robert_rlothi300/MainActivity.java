@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private TextView pressure;
     private TextView visibility;
     private ImageView weatherImg;
+    private ImageView windIcon;
     private Button startButton;
     private GoogleMap map;
     private MapView mapView;
@@ -64,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         setContentView(R.layout.activity_main);
 
         // Initialize TextView elements
-        weatherImg =findViewById(R.id.weatherImg);
         location = findViewById(R.id.location);
         temperature = findViewById(R.id.temperature);
         windDirection = findViewById(R.id.windDirection);
@@ -72,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         humidity = findViewById(R.id.humidity);
         pressure = findViewById(R.id.pressure);
         visibility = findViewById(R.id.visibility);
+
+        //initialize ImageViews
+        weatherImg =findViewById(R.id.weatherImg);
+        windIcon = findViewById(R.id.windDirectionIcon);
 
         // Initialize Spinner
         spinner = findViewById(R.id.spinner);
@@ -240,6 +244,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         new Thread(new Task(urlWeatherNow, "weatherNow")).start();
         new Thread(new Task(urlSource, "threeDayForecast")).start();
     }
+
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
@@ -355,6 +361,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                         break;
                 }
                 eventType = parser.next();
+
+                setImageForWindIcon(weatherInfo);
             }
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
@@ -370,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             String tagName = null;
             WeatherInfo currentWeatherInfo = null;
+            int dayCount = 0; // Variable to keep track of the day count
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
@@ -397,15 +406,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     case XmlPullParser.END_TAG:
                         if (parser.getName().equalsIgnoreCase("item")) {
                             if (currentWeatherInfo != null) {
-                                // Add the currentWeatherInfo to the appropriate list based on its position in the XML structure
-                                if (weatherInfoList1.isEmpty()) {
+                                setImageForWeatherCondition(currentWeatherInfo);
+                                // Add the currentWeatherInfo to the appropriate list based on day count
+                                if (dayCount == 0) {
                                     weatherInfoList1.add(currentWeatherInfo);
-                                } else if (weatherInfoList2.isEmpty()) {
+                                } else if (dayCount == 1) {
                                     weatherInfoList2.add(currentWeatherInfo);
-                                } else if (weatherInfoList3.isEmpty()) {
+                                } else if (dayCount == 2) {
                                     weatherInfoList3.add(currentWeatherInfo);
                                 }
-                                currentWeatherInfo = null; // Reset currentWeatherInfo after adding to a list
+                                currentWeatherInfo = null; // Reset currentWeatherInfo after processing
+                                dayCount++; // Increment day count for the next iteration
                             }
                         }
                         break;
@@ -416,6 +427,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             e.printStackTrace();
         }
     }
+
 
     private void parseTitle(String title, WeatherInfo weatherInfo) {
         if (title != null && !title.isEmpty()) {
@@ -441,7 +453,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     Log.d("ParseTitle", "Weather Condition extracted: " + weatherCondition);
 
                     // Set the image for the weather condition
-                    setImageForWeatherCondition(weatherCondition, weatherInfo);
+                    setImageForWeatherCondition(weatherInfo);
+
                 } else {
                     Log.d("ParseTitle", "Invalid weather format: " + weatherAndTemp);
                 }
@@ -453,49 +466,134 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
+    private void setImageForWindIcon(WeatherInfo weatherInfo) {
+        String direction = weatherInfo.getWindDirection();
 
-    private void setImageForWeatherCondition(String condition, WeatherInfo weatherInfo) {
-        // Fetching condition from WeatherInfo object
-        condition = weatherInfo.getWeatherCondition();
+        runOnUiThread(() -> {
+            Log.d("set wind direction", "Clearing wind image");
+            if (windIcon != null && direction != null) { // Check if windIcon and direction are not null
+                windIcon.setImageDrawable(null);
 
-        String finalCondition = condition;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                switch (finalCondition) {
-                    case "Sunny":
-                        weatherImg.setImageResource(R.drawable.sunny);
-                        Log.d("setImageForWeatherCondition", "Setting image for Sunny condition");
+                int rotation = 0; // Default rotation value
+
+                switch (direction) {
+                    case "Northerly":
+                        rotation = 0;
                         break;
-                    case "Sunny Intervals":
-                        weatherImg.setImageResource(R.drawable.sunny_intervals);
-                        Log.d("setImageForWeatherCondition", "Setting image for Sunny Intervals condition");
+                    case "North North Easterly":
+                        rotation = 23;
                         break;
-                    case "Light Rain":
-                        weatherImg.setImageResource(R.drawable.light_rain);
-                        Log.d("setImageForWeatherCondition", "Setting image for Light Rain condition");
+                    case "North Easterly":
+                        rotation = 45;
                         break;
-                    case "Rain":
-                        weatherImg.setImageResource(R.drawable.rain);
-                        Log.d("setImageForWeatherCondition", "Setting image for Rain condition");
+                    case "East North Easterly":
+                        rotation = 68;
                         break;
-                    case "Heavy Rain":
-                        weatherImg.setImageResource(R.drawable.heavy_rain);
-                        Log.d("setImageForWeatherCondition", "Setting image for Heavy Rain condition");
+                    case "Easterly":
+                        rotation = 90;
                         break;
-                    case "Snow":
-                        weatherImg.setImageResource(R.drawable.snow);
-                        Log.d("setImageForWeatherCondition", "Setting image for Snow condition");
+                    case "East South Easterly":
+                        rotation = 113;
+                        break;
+                    case "South Easterly":
+                        rotation = 135;
+                        break;
+                    case "South South Easterly":
+                        rotation = 158;
+                        break;
+                    case "Southerly":
+                        rotation = 180;
+                        break;
+                    case "South South Westerly":
+                        rotation = 203;
+                        break;
+                    case "South Westerly":
+                        rotation = 225;
+                        break;
+                    case "West South Westerly":
+                        rotation = 248;
+                        break;
+                    case "Westerly":
+                        rotation = 270;
+                        break;
+                    case "West North Westerly":
+                        rotation = 293;
+                        break;
+                    case "North Westerly":
+                        rotation = 315;
+                        break;
+                    case "North North Westerly":
+                        rotation = 338;
                         break;
                     default:
-                        // Set a default image if the condition is not recognized
-                        weatherImg.setImageResource(R.drawable.default_image);
-                        Log.d("setImageForWeatherCondition", "Setting default image as condition not recognized");
+                        Log.e("setImageForWindIcon", "Unknown direction: " + direction);
                         break;
                 }
+
+                // Set the image resource for the wind icon
+                windIcon.setImageResource(R.drawable.wind_icon);
+                // Apply rotation to the wind icon
+                windIcon.setRotation(rotation);
+            } else {
+                Log.e("setImageForWindIcon", "windIcon is null or direction is null");
             }
         });
     }
+
+
+    private void setImageForWeatherCondition(WeatherInfo weatherInfo) {
+        // Fetching condition from WeatherInfo object
+        String condition = weatherInfo.getWeatherCondition();
+
+        String finalCondition = condition;
+        runOnUiThread(() -> {
+
+            // Clear the ImageView only once before setting the image
+            Log.d("setImageForWeatherCondition", "Clearing ImageView");
+            weatherImg.setImageDrawable(null);
+
+            switch (finalCondition) {
+                case "Sunny":
+                    weatherImg.setImageResource(R.drawable.sunny);
+                    Log.d("setImageForWeatherCondition", "Setting image for Sunny condition");
+                    break;
+                case "Partly Cloudy":
+                case "Sunny Intervals":
+                    weatherImg.setImageResource(R.drawable.sunny_intervals);
+                    Log.d("setImageForWeatherCondition", "Setting image for Sunny Intervals condition");
+                    break;
+                case "Light Cloud":
+                    weatherImg.setImageResource(R.drawable.light_cloud);
+                    break;
+                case "Light Rain":
+                case "Light Rain Showers":
+                    weatherImg.setImageResource(R.drawable.light_rain);
+                    Log.d("setImageForWeatherCondition", "Setting image for Light Rain condition");
+                    break;
+                case "Rain":
+                    weatherImg.setImageResource(R.drawable.rain);
+                    Log.d("setImageForWeatherCondition", "Setting image for Rain condition");
+                    break;
+                case "Heavy Rain":
+                    weatherImg.setImageResource(R.drawable.heavy_rain);
+                    Log.d("setImageForWeatherCondition", "Setting image for Heavy Rain condition");
+                    break;
+                case "Thundery Showers":
+                    weatherImg.setImageResource((R.drawable.thundery_showers));
+                    break;
+                case "Snow":
+                    weatherImg.setImageResource(R.drawable.snow);
+                    Log.d("setImageForWeatherCondition", "Setting image for Snow condition");
+                    break;
+                default:
+                    // Set the default image if the condition is not recognized
+                    weatherImg.setImageResource(R.drawable.default_image);
+                    Log.d("setImageForWeatherCondition", "Setting default image as condition not recognized");
+                    break;
+            }
+        });
+    }
+
 
 
     private void updateWeatherViews(WeatherInfo weatherInfo) {

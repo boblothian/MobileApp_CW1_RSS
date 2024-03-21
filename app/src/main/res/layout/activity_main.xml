@@ -57,20 +57,37 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/windDirection"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Wind Direction: "
-                android:textAlignment="center"
-                android:textSize="18sp" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/windDirection"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Wind Direction: "
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/windDirectionIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/wind_icon"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="Wind Direction Icon" />
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/windSpeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="4dp"
                 android:text="Wind Speed: "
                 android:textAlignment="center"
                 android:textSize="18sp" />
@@ -79,7 +96,7 @@
                 android:id="@+id/humidity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="4dp"
                 android:textAlignment="center"
                 android:text="Humidity: "
                 android:textSize="18sp" />
@@ -88,7 +105,7 @@
                 android:id="@+id/pressure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="4dp"
                 android:textAlignment="center"
                 android:text="Pressure: "
                 android:textSize="18sp" />
@@ -103,7 +120,7 @@
                 android:textSize="18sp" />
             <Button
                 android:id="@+id/threeDayButton"
-                android:layout_width="match_parent"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="3-Day Forecast"
