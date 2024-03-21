@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Lothian_Robert_RLOTHI300</string>
     <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Open navigation drawer</string>
+
 </resources>

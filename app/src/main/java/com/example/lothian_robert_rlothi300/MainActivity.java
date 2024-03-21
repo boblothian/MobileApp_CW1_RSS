@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -13,7 +14,12 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.widget.Toolbar;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -33,8 +39,9 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener, AdapterView.OnItemSelectedListener, OnMapReadyCallback{
+public class MainActivity extends AppCompatActivity implements OnClickListener, AdapterView.OnItemSelectedListener, OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener{
     private TextView location;
     private TextView temperature;
     private TextView windDirection;
@@ -58,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     private double latitude;
     private double longitude;
+
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +109,18 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
         // Start progress to fetch and populate weather data
         startProgress();
@@ -149,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             case 1:
                 //London
                 location = "London";
-                locationID = "2643743";
+                locationID = "8224580";
                 latitude = 51.5072;
                 longitude = 0.1276;
                 break;
@@ -216,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     public void onClick(View aview) {
-
         if (aview.getId() == R.id.startButton) {
             // Fetch current weather data when the start button is clicked
             String urlWeatherNow = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/" + locationID + "/";
@@ -225,6 +245,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         } else if (aview.getId() == R.id.threeDayButton) {
             // Start ThreeDayForecastActivity when the Three Day Forecast button is clicked
             Intent intent = new Intent(MainActivity.this, ThreeDayForecastActivity.class);
+            // Pass the location ID to the ThreeDayForecastActivity
+            intent.putExtra("locationID", locationID);
             intent.putExtra("weatherInfo1", weatherInfoList1.toArray(new WeatherInfo[0]));
             intent.putExtra("weatherInfo2", weatherInfoList2.toArray(new WeatherInfo[0]));
             intent.putExtra("weatherInfo3", weatherInfoList3.toArray(new WeatherInfo[0]));
@@ -236,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             startActivity(intent);
         }
     }
+
 
     public void startProgress() {
 
@@ -249,6 +272,45 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        // Handle your navigation actions here
+        // For example:
+        if (id == R.id.nav_item1) {
+            // Perform the same action as the Three Day Button click
+            Intent intent = new Intent(MainActivity.this, ThreeDayForecastActivity.class);
+            intent.putExtra("weatherInfo1", weatherInfoList1.toArray(new WeatherInfo[0]));
+            intent.putExtra("weatherInfo2", weatherInfoList2.toArray(new WeatherInfo[0]));
+            intent.putExtra("weatherInfo3", weatherInfoList3.toArray(new WeatherInfo[0]));
+            String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/" + locationID + "/";
+            // Create a new Task object with the appropriate feedType
+            Task task = new Task(urlSource, "threeDayForecast");
+            // Start the thread
+            new Thread(task).start();
+            startActivity(intent);
+        } else if (id == R.id.nav_item2) {
+            // Cycle through the spinner options
+            int currentPosition = spinner.getSelectedItemPosition();
+            int newPosition = (currentPosition + 1) % paths.length;
+            spinner.setSelection(newPosition);
+        }
+
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     // Need separate thread to access the internet resource over network

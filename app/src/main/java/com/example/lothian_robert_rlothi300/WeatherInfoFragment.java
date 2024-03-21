@@ -60,7 +60,7 @@ public class WeatherInfoFragment extends Fragment {
 
     public void updateWeatherInfo(WeatherInfo weatherInfo) {
         // Update the TextViews with weather information
-        dayTextView.setText("Day: " + weatherInfo.getDay());
+        dayTextView.setText(weatherInfo.getDay());
         maxTempTextView.setText("Maximum Temperature: " + weatherInfo.getMaxTemperature());
         minTempTextView.setText("Minimum Temperature: " + weatherInfo.getMinTemperature());
         windDirectionTextView.setText("Wind Direction: " + weatherInfo.getWindDirection());

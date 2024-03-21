@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,15 +13,24 @@ import java.util.Objects;
 
 public class ThreeDayForecastActivity extends AppCompatActivity {
 
+    private TextView locationTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.three_day_forecast);
+        setContentView(R.layout.three_day_forecast); // Change the layout to activity_three_day_forecast.xml
 
         // Retrieve WeatherInfo objects from intent extras
         List<WeatherInfo> weatherInfoList1 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo1")));
         List<WeatherInfo> weatherInfoList2 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo2")));
         List<WeatherInfo> weatherInfoList3 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo3")));
+
+        // Retrieve location ID from intent extras
+        String locationID = getIntent().getStringExtra("locationID");
+
+        // Set location text
+        locationTextView = findViewById(R.id.locationTextView);
+        locationTextView.setText(locationID);
 
         // Display weather information for each day
         displayWeatherInfo(weatherInfoList1, R.id.fragmentContainer1);
