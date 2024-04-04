@@ -1,6 +1,11 @@
+// Name                 Robert Lothian
+// Student ID           S2225607
+// Programme of Study   Computer Science
+//
+
 package com.example.lothian_robert_rlothi300;
 
-import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 
@@ -21,24 +26,45 @@ public class WeatherInfo implements Serializable {
     private String sunrise;
     private String sunset;
     private String condition;
+    private String currentCondition;
+    private int dayCount;
+    private String weatherCondition;
 
     // Constructor
     public WeatherInfo() {
     }
+    public String getDay() {
+        return day;
+    }
 
-    public String getDay() {return day; }
+    public void setDay(String day) {
+        this.day = day;
+    }
 
-    public void setDay(String day) { this.day = day; }
+    public String getDate() {
+        return date;
+    }
 
-    public String getDate() { return date; }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-    public void setDate(String date) { this.date = date; }
+    public String getTime() {
+        return time;
+    }
 
-    public String getTime() { return time; }
+    public void setTime(String time) {
+        this.time = time;
+    }
 
-    public void setTime(String time) { this.time = time; }
-    public String getCurrentTemperature(){ return currentTemperature;}
-    public void setCurrentTemperature(String currentTemperature) { this.currentTemperature = currentTemperature; }
+    public String getCurrentTemperature() {
+        return currentTemperature;
+    }
+
+    public void setCurrentTemperature(String currentTemperature) {
+        this.currentTemperature = currentTemperature;
+    }
+
     public String getMaxTemperature() {
         return maxTemperature;
     }
@@ -127,6 +153,20 @@ public class WeatherInfo implements Serializable {
         this.sunset = sunset;
     }
 
-    public String getWeatherCondition() { return condition; }
-    public void setWeatherCondition(String condition){ this.condition = condition;}
+    public String getWeatherCondition() {
+        return condition;
     }
+
+    public void setWeatherCondition(String condition) {
+        this.condition = condition;
+    }
+
+    public String getCurrentCondition() {
+        return weatherCondition;
+    }
+
+    public void setCurrentCondition(String weatherCondition) {
+        this.weatherCondition = weatherCondition;
+    }
+
+}

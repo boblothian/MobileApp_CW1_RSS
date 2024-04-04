@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:gravity="center"
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/dayFrag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="36sp"
+            android:textSize="28dp"
             android:textColor="@android:color/black"
             android:gravity="center"
             android:layout_gravity="center"
             android:textAlignment="center"
             android:layout_marginBottom="16dp"/>
+
+        <ImageView
+            android:id="@+id/weatherImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"/>
 
         <TextView
             android:id="@+id/maxTempFrag"
@@ -33,6 +35,7 @@
             android:text="Maximum Temperature: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -43,6 +46,7 @@
             android:text="Minimum Temperature: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -53,6 +57,7 @@
             android:text="Wind Direction: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -63,6 +68,7 @@
             android:text="Wind Speed: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -73,6 +79,7 @@
             android:text="Visibility: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -83,6 +90,7 @@
             android:text="Pressure: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -93,6 +101,7 @@
             android:text="Humidity: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -103,6 +112,7 @@
             android:text="UV Risk: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -113,6 +123,7 @@
             android:text="Pollution: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -123,6 +134,7 @@
             android:text="Sunrise: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="8dp"/>
 
@@ -133,8 +145,9 @@
             android:text="Sunset: "
             android:textSize="18sp"
             android:textColor="@android:color/black"
+            android:textAlignment="center"
             android:gravity="center"
             android:layout_marginBottom="16dp"/>
 
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

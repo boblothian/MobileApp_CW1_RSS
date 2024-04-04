@@ -8,7 +8,9 @@
             <item
                 android:id="@+id/nav_item2"
                 android:title="Next Location" />
-
+            <item
+                android:id="@+id/nav_item3"
+                android:title="Refresh Feed"/>
         </group>
     </menu>
 

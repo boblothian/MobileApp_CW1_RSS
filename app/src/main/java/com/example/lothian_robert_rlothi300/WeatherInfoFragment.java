@@ -1,9 +1,15 @@
+// Name                 Robert Lothian
+// Student ID           S2225607
+// Programme of Study   Computer Science
+//
+
 package com.example.lothian_robert_rlothi300;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 public class WeatherInfoFragment extends Fragment {
 
+    private ImageView weatherImage;
     private TextView dayTextView;
     private TextView maxTempTextView;
     private TextView minTempTextView;
@@ -29,6 +36,7 @@ public class WeatherInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.weather_info_fragment, container, false);
 
+        weatherImage = view.findViewById(R.id.weatherImage);
         dayTextView = view.findViewById(R.id.dayFrag);
         maxTempTextView = view.findViewById(R.id.maxTempFrag);
         minTempTextView = view.findViewById(R.id.minTempFrag);
@@ -48,19 +56,61 @@ public class WeatherInfoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Here, you can safely update the TextViews
+
         Bundle args = getArguments();
         if (args != null) {
             WeatherInfo weatherInfo = (WeatherInfo) args.getSerializable("weatherInfo");
             if (weatherInfo != null) {
                 updateWeatherInfo(weatherInfo);
+                setImageForWeatherCondition(weatherInfo.getWeatherCondition());
             }
         }
     }
 
-    public void updateWeatherInfo(WeatherInfo weatherInfo) {
+        void setImageForWeatherCondition(String weatherCondition) {
+            if (weatherImage != null) {
+                switch (weatherCondition) {
+                    case "Sunny":
+                    case "Clear Sky":
+                        weatherImage.setImageResource(R.drawable.sunny);
+                        break;
+                    case "Partly Cloudy":
+                    case "Sunny Intervals":
+                        weatherImage.setImageResource(R.drawable.sunny_intervals);
+                        break;
+                    case "Light Cloud":
+                    case "Thick Cloud":
+                        weatherImage.setImageResource(R.drawable.light_cloud);
+                        break;
+                    case "Drizzle":
+                    case "Light Rain":
+                    case "Light Rain Showers":
+                        weatherImage.setImageResource(R.drawable.light_rain);
+                        break;
+                    case "Rain":
+                        weatherImage.setImageResource(R.drawable.rain);
+                        break;
+                    case "Heavy Rain":
+                        weatherImage.setImageResource(R.drawable.heavy_rain);
+                        break;
+                    case "Thundery Showers":
+                        weatherImage.setImageResource(R.drawable.thundery_showers);
+                        break;
+                    case "Snow":
+                        weatherImage.setImageResource(R.drawable.snow);
+                        break;
+                    case "Not available":
+                        weatherImage.setImageResource(R.drawable.default_image);
+                    default:
+                        weatherImage.setImageResource(R.drawable.default_image);
+                        break;
+                }
+            }
+        }
+
+    private void updateWeatherInfo(WeatherInfo weatherInfo) {
         // Update the TextViews with weather information
-        dayTextView.setText(weatherInfo.getDay());
+        dayTextView.setText(weatherInfo.getDate());
         maxTempTextView.setText("Maximum Temperature: " + weatherInfo.getMaxTemperature());
         minTempTextView.setText("Minimum Temperature: " + weatherInfo.getMinTemperature());
         windDirectionTextView.setText("Wind Direction: " + weatherInfo.getWindDirection());
@@ -74,4 +124,3 @@ public class WeatherInfoFragment extends Fragment {
         sunsetTextView.setText("Sunset: " + weatherInfo.getSunset());
     }
 }
-
