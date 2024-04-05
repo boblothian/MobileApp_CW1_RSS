@@ -7,6 +7,7 @@ package com.example.lothian_robert_rlothi300;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Xml;
 import android.view.MenuItem;
@@ -66,10 +67,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private MapView mapView;
 
     private Spinner spinner;
-    private ArrayList<WeatherInfo> currentWeatherInfoList = new ArrayList<>();
-    private ArrayList<WeatherInfo> weatherInfoList1 = new ArrayList<>();
-    private ArrayList<WeatherInfo> weatherInfoList2 = new ArrayList<>();
-    private ArrayList<WeatherInfo> weatherInfoList3 = new ArrayList<>();
+    private final ArrayList<WeatherInfo> currentWeatherInfoList = new ArrayList<>();
+    private final ArrayList<WeatherInfo> weatherInfoList1 = new ArrayList<>();
+    private final ArrayList<WeatherInfo> weatherInfoList2 = new ArrayList<>();
+    private final ArrayList<WeatherInfo> weatherInfoList3 = new ArrayList<>();
     private static final String[] paths = {"Glasgow", "London", "New York", "Oman", "Mauritius", "Bangladesh"}; // this displays names in spinner
     public String locationID = "2648579"; //sets Glasgow as default
 
@@ -77,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private double longitude;
 
     private DrawerLayout drawer;
+
+    Handler handler = new Handler();
+    Runnable refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +142,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         toggle.syncState();
 
         // Start progress to fetch and populate weather data
-        startProgress();
+        //Auto refresh both the feeds every hour
+        refresh = () -> {
+            startProgress();
+            handler.postDelayed(refresh, 3600000);
+        };
+        handler.post(refresh);
     }
 
     //Map View functions
@@ -247,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         if (aview.getId() == R.id.startButton) {
             // Fetch current weather, this is outdated, should remove
             String urlWeatherNow = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/" + locationID + "/";
-            Task task = new Task(urlWeatherNow, "weatherNow", currentWeatherInfoList); // Pass currentWeatherInfoList
+            Task task = new Task(urlWeatherNow, "weatherNow"); // Pass currentWeatherInfoList
             new Thread(task).start();
         } else if (aview.getId() == R.id.threeDayButton) {
             // Start ThreeDayForecastActivity when the Three Day Forecast button is clicked
@@ -259,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             intent.putExtra("weatherInfo3", weatherInfoList3.toArray(new WeatherInfo[0]));
             String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/" + locationID + "/";
             // Create a new Task object with the appropriate feedType
-            Task task = new Task(urlSource, "threeDayForecast", currentWeatherInfoList); // Pass currentWeatherInfoList
+            Task task = new Task(urlSource, "threeDayForecast"); // Pass currentWeatherInfoList
             // Start the thread
             new Thread(task).start();
             startActivity(intent);
@@ -270,8 +279,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         // Defines the URL to parse depending on location, starts a thread depending if it is weather now or 3 day
         String urlWeatherNow = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/"+ locationID;
         String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/" + locationID;
-        new Thread(new Task(urlWeatherNow, "weatherNow", currentWeatherInfoList)).start();
-        new Thread(new Task(urlSource, "threeDayForecast", currentWeatherInfoList)).start();
+        new Thread(new Task(urlWeatherNow, "weatherNow")).start();
+        new Thread(new Task(urlSource, "threeDayForecast")).start();
     }
 
     @Override
@@ -292,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             intent.putExtra("weatherInfo3", weatherInfoList3.toArray(new WeatherInfo[0]));
             String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/" + locationID + "/";
             // Create a new Task object with the appropriate feedType
-            Task task = new Task(urlSource, "threeDayForecast", currentWeatherInfoList);
+            Task task = new Task(urlSource, "threeDayForecast");
             // Start the thread
             new Thread(task).start();
             startActivity(intent);
@@ -325,11 +334,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private class Task implements Runnable {
-        private String url;
-        private String feedType;
+        private final String url;
+        private final String feedType;
 
         // Constructor accepting feed type
-        public Task(String aurl, String feedType, ArrayList<WeatherInfo> currentWeatherInfoList) {
+        public Task(String aurl, String feedType) {
             url = aurl;
             this.feedType = feedType; // Assign feed type
         }
@@ -344,8 +353,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             URLConnection yc;
             BufferedReader in;
             String inputLine;
-            String result = ""; // Initialize result
-            Task task = new Task(url, feedType, currentWeatherInfoList);
+            StringBuilder result = new StringBuilder(); // Initialize result
+            Task task = new Task(url, feedType);
 
             Log.e("MyTag", "in run");
 
@@ -355,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 yc = aurl.openConnection();
                 in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
                 while ((inputLine = in.readLine()) != null) {
-                    result = result + inputLine;
+                    result.append(inputLine);
                     Log.e("MyTag", inputLine);
                 }
                 in.close();
@@ -365,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             Log.e("MyTag", "Xml Data" + result);
 
-            parseData(result, task);
+            parseData(result.toString(), task);
         }
     }
 
@@ -384,6 +393,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
+    /** @noinspection unused*/
     private void parseWeatherNow(String dataToParse) {
         try {
             XmlPullParser parser = Xml.newPullParser();
@@ -556,6 +566,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 Log.d("CONDITION","CONDITION IS "+ currentCondition);
 
                 weatherInfo.setCurrentCondition(currentCondition);
+            }
+
+            else {
+                Log.e("Parse Title Current","Could not get the current weather");
             }
 
 
@@ -842,7 +856,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             }
         });
     }
-
 
     // Updates UI with current Weather Info
     private void updateWeatherViews(WeatherInfo weatherInfo) {

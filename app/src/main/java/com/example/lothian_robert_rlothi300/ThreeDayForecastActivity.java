@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -62,6 +63,28 @@ public class ThreeDayForecastActivity extends AppCompatActivity {
         Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> finish());
     }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setContentView(R.layout.activity_three_day_forecast_land);
+            updateFragmentContainers(); // Update fragment containers
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.activity_three_day_forecast);
+            updateFragmentContainers(); // Update fragment containers
+        }
+    }
+
+    private void updateFragmentContainers() {
+        List<WeatherInfo> weatherInfoList1 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo1")));
+        List<WeatherInfo> weatherInfoList2 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo2")));
+        List<WeatherInfo> weatherInfoList3 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo3")));
+
+        displayWeatherInfo(weatherInfoList1, R.id.fragmentContainer1);
+        displayWeatherInfo(weatherInfoList2, R.id.fragmentContainer2);
+        displayWeatherInfo(weatherInfoList3, R.id.fragmentContainer3);
+    }
+
 
     private void displayWeatherInfo(List<WeatherInfo> weatherInfoList, int containerId) {
         if (weatherInfoList != null && !weatherInfoList.isEmpty()) {
