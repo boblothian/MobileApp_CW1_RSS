@@ -5,14 +5,10 @@
 
 package com.example.lothian_robert_rlothi300;
 
-import android.widget.ImageView;
-
 import java.io.Serializable;
 
 public class WeatherInfo implements Serializable {
-    private String day;
     private String date;
-    private String time;
     private String currentTemperature;
     private String maxTemperature;
     private String minTemperature;
@@ -26,19 +22,13 @@ public class WeatherInfo implements Serializable {
     private String sunrise;
     private String sunset;
     private String condition;
-    private String currentCondition;
-    private int dayCount;
     private String weatherCondition;
 
     // Constructor
     public WeatherInfo() {
     }
-    public String getDay() {
-        return day;
-    }
 
     public void setDay(String day) {
-        this.day = day;
     }
 
     public String getDate() {
@@ -47,14 +37,6 @@ public class WeatherInfo implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public String getCurrentTemperature() {

@@ -6,7 +6,9 @@
 package com.example.lothian_robert_rlothi300;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Xml;
 import android.view.MenuItem;
@@ -40,6 +42,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -66,10 +69,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private MapView mapView;
 
     private Spinner spinner;
-    private ArrayList<WeatherInfo> currentWeatherInfoList = new ArrayList<>();
-    private ArrayList<WeatherInfo> weatherInfoList1 = new ArrayList<>();
-    private ArrayList<WeatherInfo> weatherInfoList2 = new ArrayList<>();
-    private ArrayList<WeatherInfo> weatherInfoList3 = new ArrayList<>();
+    private final ArrayList<WeatherInfo> currentWeatherInfoList = new ArrayList<>();
+    private final ArrayList<WeatherInfo> weatherInfoList1 = new ArrayList<>();
+    private final ArrayList<WeatherInfo> weatherInfoList2 = new ArrayList<>();
+    private final ArrayList<WeatherInfo> weatherInfoList3 = new ArrayList<>();
     private static final String[] paths = {"Glasgow", "London", "New York", "Oman", "Mauritius", "Bangladesh"}; // this displays names in spinner
     public String locationID = "2648579"; //sets Glasgow as default
 
@@ -77,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     private double longitude;
 
     private DrawerLayout drawer;
+
+    Handler handler = new Handler();
+    Runnable refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         //initialize ImageViews
         weatherImg =findViewById(R.id.weatherImg);
-        //currentWeatherImg = findViewById(R.id.weatherImg);
         windIcon = findViewById(R.id.windDirectionIcon);
 
         // Initialize Spinner
@@ -138,7 +143,12 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         toggle.syncState();
 
         // Start progress to fetch and populate weather data
-        startProgress();
+        //Auto refresh both the feeds every 15 minutes
+        refresh = () -> {
+            startProgress();
+            handler.postDelayed(refresh, 900000);
+        };
+        handler.post(refresh);
     }
 
     //Map View functions
@@ -166,8 +176,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         mapView.onLowMemory();
     }
 
-
-
     // When an option on the spinner is picked it changes the locationID and acts as an onClick
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
         String selectedLocation = paths[position]; // Get the selected location from the spinner
@@ -184,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             case 1:
                 //London
                 locationID = "2651500";
-                latitude = 51.5072;
+                latitude = 51.5072 ;
                 longitude = 0.1276;
                 break;
             case 2:
@@ -208,8 +216,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             case 5:
                 //Bangladesh
                 locationID = "1185241";
-                latitude = 23.6850;
-                longitude = 90.3563;
+                latitude = 24.1190;
+                longitude = 90.2524;
                 break;
         }
 
@@ -247,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         if (aview.getId() == R.id.startButton) {
             // Fetch current weather, this is outdated, should remove
             String urlWeatherNow = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/" + locationID + "/";
-            Task task = new Task(urlWeatherNow, "weatherNow", currentWeatherInfoList); // Pass currentWeatherInfoList
+            Task task = new Task(urlWeatherNow, "weatherNow"); // Pass currentWeatherInfoList
             new Thread(task).start();
         } else if (aview.getId() == R.id.threeDayButton) {
             // Start ThreeDayForecastActivity when the Three Day Forecast button is clicked
@@ -259,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             intent.putExtra("weatherInfo3", weatherInfoList3.toArray(new WeatherInfo[0]));
             String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/" + locationID + "/";
             // Create a new Task object with the appropriate feedType
-            Task task = new Task(urlSource, "threeDayForecast", currentWeatherInfoList); // Pass currentWeatherInfoList
+            Task task = new Task(urlSource, "threeDayForecast"); // Pass currentWeatherInfoList
             // Start the thread
             new Thread(task).start();
             startActivity(intent);
@@ -270,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         // Defines the URL to parse depending on location, starts a thread depending if it is weather now or 3 day
         String urlWeatherNow = "https://weather-broker-cdn.api.bbci.co.uk/en/observation/rss/"+ locationID;
         String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/" + locationID;
-        new Thread(new Task(urlWeatherNow, "weatherNow", currentWeatherInfoList)).start();
-        new Thread(new Task(urlSource, "threeDayForecast", currentWeatherInfoList)).start();
+        new Thread(new Task(urlWeatherNow, "weatherNow")).start();
+        new Thread(new Task(urlSource, "threeDayForecast")).start();
     }
 
     @Override
@@ -292,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             intent.putExtra("weatherInfo3", weatherInfoList3.toArray(new WeatherInfo[0]));
             String urlSource = "https://weather-broker-cdn.api.bbci.co.uk/en/forecast/rss/3day/" + locationID + "/";
             // Create a new Task object with the appropriate feedType
-            Task task = new Task(urlSource, "threeDayForecast", currentWeatherInfoList);
+            Task task = new Task(urlSource, "threeDayForecast");
             // Start the thread
             new Thread(task).start();
             startActivity(intent);
@@ -325,11 +333,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private class Task implements Runnable {
-        private String url;
-        private String feedType;
+        private final String url;
+        private final String feedType;
 
         // Constructor accepting feed type
-        public Task(String aurl, String feedType, ArrayList<WeatherInfo> currentWeatherInfoList) {
+        public Task(String aurl, String feedType) {
             url = aurl;
             this.feedType = feedType; // Assign feed type
         }
@@ -344,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             URLConnection yc;
             BufferedReader in;
             String inputLine;
-            String result = ""; // Initialize result
-            Task task = new Task(url, feedType, currentWeatherInfoList);
+            StringBuilder result = new StringBuilder(); // Initialize result
+            Task task = new Task(url, feedType);
 
             Log.e("MyTag", "in run");
 
@@ -355,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 yc = aurl.openConnection();
                 in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
                 while ((inputLine = in.readLine()) != null) {
-                    result = result + inputLine;
+                    result.append(inputLine);
                     Log.e("MyTag", inputLine);
                 }
                 in.close();
@@ -365,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             Log.e("MyTag", "Xml Data" + result);
 
-            parseData(result, task);
+            parseData(result.toString(), task);
         }
     }
 
@@ -413,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                                     break;
                                 case "pubDate":
                                     // Parse the pubDate to get the current day and date
-                                    String pubDate = parsePubDate(text, weatherInfo);
+                                    parsePubDate(text, weatherInfo);
                                     break;
                             }
                         }
@@ -421,12 +429,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
                     case XmlPullParser.END_TAG:
                         if (parser.getName().equalsIgnoreCase("item")) {
-                            if (weatherInfo != null) {
-                                currentWeatherInfoList.add(weatherInfo); // Add the parsed weather info to the list
-                                updateWeatherViews(weatherInfo); // Update UI with the latest weather info
-                                // Reset weatherInfo after processing
-                                weatherInfo = new WeatherInfo(); // Create a new WeatherInfo object for the next weather info
-                            }
+                            currentWeatherInfoList.add(weatherInfo); // Add the parsed weather info to the list
+                            updateWeatherViews(weatherInfo); // Update UI with the latest weather info
+                            // Reset weatherInfo after processing
+                            weatherInfo = new WeatherInfo(); // Create a new WeatherInfo object for the next weather info
                         }
                         break;
                 }
@@ -441,12 +447,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     // Helper method to parse the pubDate and extract current day and date
-    private String parsePubDate(String pubDate, WeatherInfo weatherInfo) {
+    private void parsePubDate(String pubDate, WeatherInfo weatherInfo) {
         try {
             SimpleDateFormat inputFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
             Date date = inputFormat.parse(pubDate);
 
             SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.ENGLISH);
+            assert date != null;
             String day = dayFormat.format(date); // Get the current day
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
@@ -457,10 +464,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             weatherInfo.setDate(dateString);
 
             // Return the formatted date
-            return dateString;
         } catch (ParseException e) {
             e.printStackTrace();
-            return ""; // Return empty string if parsing fails
         }
     }
     private void parseThreeDayForecast(String dataToParse) {
@@ -493,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
                                     break;
                                 case "description":
-                                    parseDescriptionThreeDayForecast(text, currentWeatherInfo, dayCount); // Pass dayCount to the method
+                                    parseDescriptionThreeDayForecast(text, currentWeatherInfo); // Pass dayCount to the method
                                     break;
                                 case "pubDate":
                                     // Parse the pubDate to get the current day and date
@@ -556,6 +561,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 Log.d("CONDITION","CONDITION IS "+ currentCondition);
 
                 weatherInfo.setCurrentCondition(currentCondition);
+            }
+
+            else {
+                Log.e("Parse Title Current","Could not get the current weather");
             }
 
 
@@ -631,6 +640,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                     case "Visibility":
                         weatherInfo.setVisibility(value);
                         break;
+                    case "Condition":
+                        weatherInfo.setCurrentCondition(value);
+                        break;
                     default:
                         break;
                 }
@@ -640,7 +652,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
     //this method parses through the Description tag of the RSS feed, it splits the data by category
     //by looking for a comma space ", " and then into key values by identifying when a colon space ": " occurs
-    private void parseDescriptionThreeDayForecast(String description, WeatherInfo weatherInfo, int dayCount) {
+    private void parseDescriptionThreeDayForecast(String description, WeatherInfo weatherInfo) {
         // Method body
         Log.e("Description", description);
         String[] parts = description.split(", ");
@@ -701,11 +713,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         String windSpeedString = weatherInfo.getWindSpeed();
         double windSpeed;
 
-        if (weatherInfo != null && direction != null) {
+        if (direction != null) {
             windSpeedString = windSpeedString.replaceAll("[^\\d.]", "");
             windSpeed = Double.parseDouble(windSpeedString); // Parse wind speed
         } else {
-            windSpeed = 0;
             // Handle the case where either weatherInfo or direction is null
             Log.e("setImageForWindIcon", "weatherInfo or direction is null");
             return; // Exit the method early
@@ -713,7 +724,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
         runOnUiThread(() -> {
             Log.d("set wind direction", "Clearing wind image");
-            if (windIcon != null && direction != null) { // Check if windIcon and direction are not null
+            if (windIcon != null) { // Check if windIcon and direction are not null
                 windIcon.setImageDrawable(null);
 
                 int rotation = 0; // Default rotation value
@@ -771,17 +782,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                         break;
                 }
 
+                //set icon for wind dependant on wind strength
                 if (windSpeed >= 30){
                     windIcon.setImageResource(R.drawable.wind_icon_red);
                 }
-                else if (windSpeed >=20 && windSpeed < 30){
+                else if (windSpeed >=20){
                     windIcon.setImageResource(R.drawable.wind_icon_orange);
                 }
-                else if (windSpeed >=10 && windSpeed <20){
+                else if (windSpeed >=10){
                     windIcon.setImageResource(R.drawable.wind_icon_yellow);
                 }
                 else {
-                    // Set the image resource for the wind icon
                     windIcon.setImageResource(R.drawable.wind_icon);
                 }
                 // Apply rotation to the wind icon
@@ -794,54 +805,96 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void setImageForWeatherCondition(WeatherInfo weatherInfo) {
-
         String condition = weatherInfo.getCurrentCondition();
-
         Log.d("CONDITION", "the condition for current weather is set to " + condition);
 
         runOnUiThread(() -> {
             if (condition != null) {
-
-                // Set the image based on the weather condition
-                switch (condition) {
+                // Set the GIF based on the weather condition using Glide
+                String finalCondition = condition; // Make a final copy of condition
+                switch (finalCondition) {
                     case "Sunny":
                     case "Clear Sky":
-                        weatherImg.setImageResource(R.drawable.sunny);
+                        Glide.with(this).load(R.drawable.sunny_gif).into(weatherImg);
                         break;
                     case "Partly Cloudy":
                     case "Sunny Intervals":
-                        weatherImg.setImageResource(R.drawable.sunny_intervals);
+                        Glide.with(this).load(R.drawable.sunny_intervals_gif).into(weatherImg);
                         break;
                     case "Light Cloud":
                     case "Thick Cloud":
-                        weatherImg.setImageResource(R.drawable.light_cloud);
+                        Glide.with(this).load(R.drawable.cloud).into(weatherImg);
                         break;
                     case "Drizzle":
                     case "Light Rain":
+                        Glide.with(this).load(R.drawable.light_rain_gif).into(weatherImg);
+                        break;
                     case "Light Rain Showers":
-                        weatherImg.setImageResource(R.drawable.light_rain);
+                        Glide.with(this).load(R.drawable.light_rain_showers_gif).into(weatherImg);
                         break;
                     case "Rain":
-                        weatherImg.setImageResource(R.drawable.rain);
+                        Glide.with(this).load(R.drawable.rain_gif).into(weatherImg);
                         break;
                     case "Heavy Rain":
-                        weatherImg.setImageResource(R.drawable.heavy_rain);
+                        Glide.with(this).load(R.drawable.heavy_rain_gif).into(weatherImg);
                         break;
                     case "Thundery Showers":
-                        weatherImg.setImageResource(R.drawable.thundery_showers);
+                        Glide.with(this).load(R.drawable.lightning_gif).into(weatherImg);
                         break;
                     case "Snow":
-                        weatherImg.setImageResource(R.drawable.snow);
+                        Glide.with(this).load(R.drawable.snow_gif).into(weatherImg);
                         break;
                     case "Not available":
-                        weatherImg.setImageResource(R.drawable.default_image);
+                    case "not available":
+                        // If current condition is not available, check the three-day forecast
+                        if (!weatherInfoList1.isEmpty()) {
+                            WeatherInfo threeDayWeather = weatherInfoList1.get(0); // Get the first weather info from the three-day forecast
+                            finalCondition = threeDayWeather.getWeatherCondition(); // Update the condition from the three-day forecast
+                        }
+                        // Now, check the condition again
+                        switch (finalCondition) {
+                            case "Sunny":
+                            case "Clear Sky":
+                                Glide.with(this).load(R.drawable.sunny_gif).into(weatherImg);
+                                break;
+                            case "Partly Cloudy":
+                            case "Sunny Intervals":
+                                Glide.with(this).load(R.drawable.sunny_intervals_gif).into(weatherImg);
+                                break;
+                            case "Light Cloud":
+                            case "Thick Cloud":
+                                Glide.with(this).load(R.drawable.cloud).into(weatherImg);
+                                break;
+                            case "Drizzle":
+                            case "Light Rain":
+                                Glide.with(this).load(R.drawable.light_rain_gif).into(weatherImg);
+                                break;
+                            case "Light Rain Showers":
+                                Glide.with(this).load(R.drawable.light_rain_showers_gif).into(weatherImg);
+                                break;
+                            case "Rain":
+                                Glide.with(this).load(R.drawable.rain_gif).into(weatherImg);
+                                break;
+                            case "Heavy Rain":
+                                Glide.with(this).load(R.drawable.heavy_rain_gif).into(weatherImg);
+                                break;
+                            case "Thundery Showers":
+                                Glide.with(this).load(R.drawable.lightning_gif).into(weatherImg);
+                                break;
+                            case "Snow":
+                                Glide.with(this).load(R.drawable.snow_gif).into(weatherImg);
+                                break;
+                        }
+                        break; // Break from the outer switch statement
                     default:
-                        weatherImg.setImageResource(R.drawable.default_image);
+                        // If the condition is not "Not available", use the specified condition
+                        Glide.with(this).load(R.drawable.default_image).into(weatherImg);
                         break;
                 }
             }
         });
     }
+
 
 
     // Updates UI with current Weather Info
@@ -851,13 +904,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
                 date.setText((weatherInfo.getDate()));
                 temperature.setText(weatherInfo.getCurrentTemperature());
-                windDirection.setText("Wind Direction: " + weatherInfo.getWindDirection());
-                windSpeed.setText("Wind Speed: " + weatherInfo.getWindSpeed());
-                humidity.setText("Humidity: " + weatherInfo.getHumidity());
-                pressure.setText("Pressure: " + weatherInfo.getPressure());
-                visibility.setText("Visibility: " + weatherInfo.getVisibility());
+                windDirection.setText(String.format("Wind Direction: %s", weatherInfo.getWindDirection()));
+                windSpeed.setText(String.format("Wind Speed: %s", weatherInfo.getWindSpeed()));
+                humidity.setText(String.format("Humidity: %s", weatherInfo.getHumidity()));
+                pressure.setText(String.format("Pressure: %s", weatherInfo.getPressure()));
+                visibility.setText(String.format("Visibility: %s", weatherInfo.getVisibility()));
 
             });
+
         } else {
             Log.e("updateWeatherViews", "WeatherInfo object is null");
         }

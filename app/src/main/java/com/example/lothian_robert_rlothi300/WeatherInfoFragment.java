@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+
 public class WeatherInfoFragment extends Fragment {
 
     private ImageView weatherImage;
@@ -30,6 +32,7 @@ public class WeatherInfoFragment extends Fragment {
     private TextView pollutionTextView;
     private TextView sunriseTextView;
     private TextView sunsetTextView;
+    private String weatherCondition;
 
     @Nullable
     @Override
@@ -72,32 +75,34 @@ public class WeatherInfoFragment extends Fragment {
                 switch (weatherCondition) {
                     case "Sunny":
                     case "Clear Sky":
-                        weatherImage.setImageResource(R.drawable.sunny);
+                        Glide.with(this).load(R.drawable.sunny_gif).into(weatherImage);
                         break;
                     case "Partly Cloudy":
                     case "Sunny Intervals":
-                        weatherImage.setImageResource(R.drawable.sunny_intervals);
+                        Glide.with(this).load(R.drawable.sunny_intervals_gif).into(weatherImage);
                         break;
                     case "Light Cloud":
                     case "Thick Cloud":
-                        weatherImage.setImageResource(R.drawable.light_cloud);
+                        Glide.with(this).load(R.drawable.cloud).into(weatherImage);
                         break;
                     case "Drizzle":
                     case "Light Rain":
+                        Glide.with(this).load(R.drawable.light_rain_gif).into(weatherImage);
+                        break;
                     case "Light Rain Showers":
-                        weatherImage.setImageResource(R.drawable.light_rain);
+                        Glide.with(this).load(R.drawable.light_rain_showers_gif).into(weatherImage);
                         break;
                     case "Rain":
-                        weatherImage.setImageResource(R.drawable.rain);
+                        Glide.with(this).load(R.drawable.rain_gif).into(weatherImage);
                         break;
                     case "Heavy Rain":
-                        weatherImage.setImageResource(R.drawable.heavy_rain);
+                        Glide.with(this).load(R.drawable.heavy_rain_gif).into(weatherImage);
                         break;
                     case "Thundery Showers":
-                        weatherImage.setImageResource(R.drawable.thundery_showers);
+                        Glide.with(this).load(R.drawable.lightning_gif).into(weatherImage);
                         break;
                     case "Snow":
-                        weatherImage.setImageResource(R.drawable.snow);
+                        Glide.with(this).load(R.drawable.snow_gif).into(weatherImage);
                         break;
                     case "Not available":
                         weatherImage.setImageResource(R.drawable.default_image);
@@ -108,19 +113,28 @@ public class WeatherInfoFragment extends Fragment {
             }
         }
 
+    public String getWeatherCondition() {
+        return weatherCondition;
+    }
+
+    public void setWeatherCondition(String condition) {
+        // Set the weather condition in the fragment
+        weatherCondition = condition;
+    }
+
     private void updateWeatherInfo(WeatherInfo weatherInfo) {
         // Update the TextViews with weather information
         dayTextView.setText(weatherInfo.getDate());
-        maxTempTextView.setText("Maximum Temperature: " + weatherInfo.getMaxTemperature());
-        minTempTextView.setText("Minimum Temperature: " + weatherInfo.getMinTemperature());
-        windDirectionTextView.setText("Wind Direction: " + weatherInfo.getWindDirection());
-        windSpeedTextView.setText("Wind Speed: " + weatherInfo.getWindSpeed());
-        visibilityTextView.setText("Visibility: " + weatherInfo.getVisibility());
-        pressureTextView.setText("Pressure: " + weatherInfo.getPressure());
-        humidityTextView.setText("Humidity: " + weatherInfo.getHumidity());
-        uvRiskTextView.setText("UV Risk: " + weatherInfo.getUvRisk());
-        pollutionTextView.setText("Pollution: " + weatherInfo.getPollution());
-        sunriseTextView.setText("Sunrise: " + weatherInfo.getSunrise());
-        sunsetTextView.setText("Sunset: " + weatherInfo.getSunset());
+        maxTempTextView.setText(String.format("Maximum Temperature: %s", weatherInfo.getMaxTemperature()));
+        minTempTextView.setText(String.format("Minimum Temperature: %s", weatherInfo.getMinTemperature()));
+        windDirectionTextView.setText(String.format("Wind Direction: %s", weatherInfo.getWindDirection()));
+        windSpeedTextView.setText(String.format("Wind Speed: %s", weatherInfo.getWindSpeed()));
+        visibilityTextView.setText(String.format("Visibility: %s", weatherInfo.getVisibility()));
+        pressureTextView.setText(String.format("Pressure: %s", weatherInfo.getPressure()));
+        humidityTextView.setText(String.format("Humidity: %s", weatherInfo.getHumidity()));
+        uvRiskTextView.setText(String.format("UV Risk: %s", weatherInfo.getUvRisk()));
+        pollutionTextView.setText(String.format("Pollution: %s", weatherInfo.getPollution()));
+        sunriseTextView.setText(String.format("Sunrise: %s", weatherInfo.getSunrise()));
+        sunsetTextView.setText(String.format("Sunset: %s", weatherInfo.getSunset()));
     }
 }

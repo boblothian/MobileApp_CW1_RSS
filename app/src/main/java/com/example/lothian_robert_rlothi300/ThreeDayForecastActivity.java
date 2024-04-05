@@ -4,10 +4,12 @@
 //
 package com.example.lothian_robert_rlothi300;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -19,12 +21,10 @@ import java.util.Objects;
 
 public class ThreeDayForecastActivity extends AppCompatActivity {
 
-    private TextView locationTextView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.three_day_forecast); // Change the layout to activity_three_day_forecast.xml
+        setContentView(R.layout.activity_three_day_forecast); // Change the layout to activity_three_day_forecast.xml
 
         // Retrieve WeatherInfo objects from intent extras
         List<WeatherInfo> weatherInfoList1 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo1")));
@@ -51,7 +51,7 @@ public class ThreeDayForecastActivity extends AppCompatActivity {
         }
 
         // Set location text
-        locationTextView = findViewById(R.id.locationTextView);
+        TextView locationTextView = findViewById(R.id.locationTextView);
         locationTextView.setText(locationName);
 
         // Display weather information for each day
@@ -62,6 +62,28 @@ public class ThreeDayForecastActivity extends AppCompatActivity {
         Button backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> finish());
     }
+
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setContentView(R.layout.activity_three_day_forecast_land);
+            updateFragmentContainers(); // Update fragment containers
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.activity_three_day_forecast);
+            updateFragmentContainers(); // Update fragment containers
+        }
+    }
+
+    private void updateFragmentContainers() {
+        List<WeatherInfo> weatherInfoList1 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo1")));
+        List<WeatherInfo> weatherInfoList2 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo2")));
+        List<WeatherInfo> weatherInfoList3 = Arrays.asList((WeatherInfo[]) Objects.requireNonNull(getIntent().getSerializableExtra("weatherInfo3")));
+
+        displayWeatherInfo(weatherInfoList1, R.id.fragmentContainer1);
+        displayWeatherInfo(weatherInfoList2, R.id.fragmentContainer2);
+        displayWeatherInfo(weatherInfoList3, R.id.fragmentContainer3);
+    }
+
 
     private void displayWeatherInfo(List<WeatherInfo> weatherInfoList, int containerId) {
         if (weatherInfoList != null && !weatherInfoList.isEmpty()) {
@@ -76,10 +98,10 @@ public class ThreeDayForecastActivity extends AppCompatActivity {
                     args.putSerializable("weatherInfo", weatherInfo);
                     fragment.setArguments(args);
 
-                    transaction.add(containerId, fragment);
+                    // Set the weather condition in the fragment
+                    fragment.setWeatherCondition(weatherInfo.getCurrentCondition());
 
-                    // Set the weather image in the fragment
-                    fragment.setImageForWeatherCondition(weatherInfo.getWeatherCondition());
+                    transaction.add(containerId, fragment);
                 } else {
                     Log.e("displayWeatherInfo", "WeatherInfo object is null");
                     // Handle the null case, such as logging an error or skipping the update
