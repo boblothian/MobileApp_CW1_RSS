@@ -113,10 +113,6 @@ public class WeatherInfoFragment extends Fragment {
             }
         }
 
-    public String getWeatherCondition() {
-        return weatherCondition;
-    }
-
     public void setWeatherCondition(String condition) {
         // Set the weather condition in the fragment
         weatherCondition = condition;

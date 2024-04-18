@@ -6,7 +6,6 @@
 package com.example.lothian_robert_rlothi300;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -465,7 +464,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             String dateString = dateFormat.format(date); // Get the current date
 
             // Set the current day and date in the WeatherInfo object
-            weatherInfo.setDay(day);
+            weatherInfo.setDay();
             weatherInfo.setDate(dateString);
 
             // Return the formatted date
@@ -589,7 +588,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                 String day = parts[0].trim();
 
                 // Set the day in the WeatherInfo object
-                weatherInfo.setDay(day);
+                weatherInfo.setDay();
                 Log.d("ParseTitle3Day", "Day extracted: " + day);
 
                 // Extract the weather condition

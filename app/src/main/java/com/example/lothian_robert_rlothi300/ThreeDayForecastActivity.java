@@ -33,8 +33,25 @@ public class ThreeDayForecastActivity extends AppCompatActivity {
 
         // Retrieve location ID from intent extras
         String locationID = getIntent().getStringExtra("locationID");
+        String locationName = getString(locationID);
+
+        // Set location text
+        TextView locationTextView = findViewById(R.id.locationTextView);
+        locationTextView.setText(locationName);
+
+        // Display weather information for each day
+        displayWeatherInfo(weatherInfoList1, R.id.fragmentContainer1);
+        displayWeatherInfo(weatherInfoList2, R.id.fragmentContainer2);
+        displayWeatherInfo(weatherInfoList3, R.id.fragmentContainer3);
+
+        Button backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish());
+    }
+
+    @NonNull
+    private static String getString(String locationID) {
         String locationName = "";
-        
+
         //convert location identify to place location name.
         if ("2648579".equals(locationID)) {
             locationName = "Glasgow";
@@ -49,18 +66,7 @@ public class ThreeDayForecastActivity extends AppCompatActivity {
         } else if ("1185241".equals(locationID)) {
             locationName = "Bangladesh";
         }
-
-        // Set location text
-        TextView locationTextView = findViewById(R.id.locationTextView);
-        locationTextView.setText(locationName);
-
-        // Display weather information for each day
-        displayWeatherInfo(weatherInfoList1, R.id.fragmentContainer1);
-        displayWeatherInfo(weatherInfoList2, R.id.fragmentContainer2);
-        displayWeatherInfo(weatherInfoList3, R.id.fragmentContainer3);
-
-        Button backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> finish());
+        return locationName;
     }
 
     public void onConfigurationChanged(@NonNull Configuration newConfig) {

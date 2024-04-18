@@ -28,7 +28,7 @@ public class WeatherInfo implements Serializable {
     public WeatherInfo() {
     }
 
-    public void setDay(String day) {
+    public void setDay() {
     }
 
     public String getDate() {

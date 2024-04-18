@@ -4,5 +4,21 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Open navigation drawer</string>
+    <string name="location">Location:</string>
+    <string name="back">Back</string>
+    <string name="robert_lothian_s2225607">Robert Lothian S2225607</string>
+    <string name="weather_application">Weather Application</string>
+    <string name="mobile_app_development_cw1">Mobile App Development CW1</string>
+    <string name="maximum_temperature">Maximum Temperature:</string>
+    <string name="minimum_temperature">Minimum Temperature:</string>
+    <string name="wind_direction">Wind Direction:</string>
+    <string name="wind_speed">Wind Speed:</string>
+    <string name="visibility">Visibility:</string>
+    <string name="pressure">Pressure:</string>
+    <string name="humidity">Humidity:</string>
+    <string name="uv_risk">UV Risk:</string>
+    <string name="pollution">Pollution:</string>
+    <string name="sunrise">Sunrise:</string>
+    <string name="sunset">Sunset:</string>
 
 </resources>
