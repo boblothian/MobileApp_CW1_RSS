@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         pressure = findViewById(R.id.pressure);
         visibility = findViewById(R.id.visibility);
 
-        //initialize ImageViews
+        // Initialize ImageViews
         weatherImg =findViewById(R.id.weatherImg);
         windIcon = findViewById(R.id.windDirectionIcon);
 
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         handler.post(refresh);
     }
 
-    //Map View functions
+    // Map View functions
     @Override
     protected void onResume() {
         super.onResume();
@@ -287,6 +287,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         super.onPointerCaptureChanged(hasCapture);
     }
 
+
+    //Nav bar logic
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view items
@@ -295,6 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         if (id == R.id.nav_item1) {
             // Perform the same action as the Three Day Button click
             Intent intent = new Intent(MainActivity.this, ThreeDayForecastActivity.class);
+            intent.putExtra("locationID", locationID);
             intent.putExtra("weatherInfo1", weatherInfoList1.toArray(new WeatherInfo[0]));
             intent.putExtra("weatherInfo2", weatherInfoList2.toArray(new WeatherInfo[0]));
             intent.putExtra("weatherInfo3", weatherInfoList3.toArray(new WeatherInfo[0]));
@@ -332,6 +335,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         }
     }
 
+    // This task determines what feed type to parse and runs parsing logic
     private class Task implements Runnable {
         private final String url;
         private final String feedType;
@@ -346,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
         public String getFeedType() {
             return feedType;
         }
+
         @Override
         public void run() {
             URL aurl;
@@ -478,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             String tagName = null;
             WeatherInfo currentWeatherInfo = null;
-            int dayCount = 0; // Initialize dayCount before the loop
+            int dayCount = 0;
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 switch (eventType) {
@@ -498,7 +503,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
                                     break;
                                 case "description":
-                                    parseDescriptionThreeDayForecast(text, currentWeatherInfo); // Pass dayCount to the method
+                                    parseDescriptionThreeDayForecast(text, currentWeatherInfo);
                                     break;
                                 case "pubDate":
                                     // Parse the pubDate to get the current day and date
@@ -536,15 +541,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
     }
 
     private void incrementPubDate(WeatherInfo currentWeatherInfo, int dayCount) {
-        // Increment the date by the number of days represented by dayCount
+        // Increment the date
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, dayCount);
 
-        // Format the date to the desired format (e.g., "EEE, dd MMM yyyy HH:mm:ss z")
+        // Format the date
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.ENGLISH);
         String forecastDate = sdf.format(calendar.getTime());
 
-        // Set the forecasted date for the respective day
+        // Set the forecasted date
         currentWeatherInfo.setDate(forecastDate);
     }
 
@@ -581,16 +586,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
 
             // Ensure there is at least one part
             if (parts.length > 1) {
-                // Extract the first part as day
                 String day = parts[0].trim();
 
                 // Set the day in the WeatherInfo object
                 weatherInfo.setDay(day);
                 Log.d("ParseTitle3Day", "Day extracted: " + day);
 
-                // Extract the weather condition from the title
-                String weatherAndTemp = parts[1].trim(); // Extract the weather condition after the colon
-                // Split the weatherAndTemp by comma (",") to separate weather condition and minimum temperature
+                // Extract the weather condition
+                String weatherAndTemp = parts[1].trim();
                 String[] weatherParts = weatherAndTemp.split(",");
                 if (weatherParts.length > 0) {
                     String weatherCondition = weatherParts[0].trim(); // Extract the weather condition
@@ -620,7 +623,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
             if (keyValue.length == 2) {
                 String key = keyValue[0];
                 String value = keyValue[1];
-                // Parse each key-value pair and set the corresponding fields in the WeatherInfo object
+                // Parse each key-value pair and set
                 switch (key) {
                     case "Temperature":
                         weatherInfo.setCurrentTemperature(value);
