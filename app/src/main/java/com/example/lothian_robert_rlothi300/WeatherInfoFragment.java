@@ -105,9 +105,9 @@ public class WeatherInfoFragment extends Fragment {
                         Glide.with(this).load(R.drawable.snow_gif).into(weatherImage);
                         break;
                     case "Not available":
-                        weatherImage.setImageResource(R.drawable.default_image);
+                        //weatherImage.setImageResource(R.drawable.default_image);
                     default:
-                        weatherImage.setImageResource(R.drawable.default_image);
+                        //weatherImage.setImageResource(R.drawable.default_image);
                         break;
                 }
             }

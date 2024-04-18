@@ -890,7 +890,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener, 
                         break; // Break from the outer switch statement
                     default:
                         // If the condition is not "Not available", use the specified condition
-                        Glide.with(this).load(R.drawable.default_image).into(weatherImg);
+                        //Glide.with(this).load(R.drawable.default_image).into(weatherImg);
                         break;
                 }
             }
